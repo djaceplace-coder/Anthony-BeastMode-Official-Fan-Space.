@@ -1,0 +1,302 @@
+{
+  "entities": {
+    "ArtistProfile": {
+      "title": "ArtistProfile",
+      "description": "Official artist profile and verified biographical overview",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string", "maxLength": 100 },
+        "shortBio": { "type": "string", "maxLength": 500 },
+        "longBio": { "type": "string", "maxLength": 5000 },
+        "originSummary": { "type": "string", "maxLength": 500 },
+        "homeBase": { "type": "string", "maxLength": 100 },
+        "approvalStatus": { "type": "string", "enum": ["pending", "approved", "changes_requested"] },
+        "approvedAt": { "type": "string" },
+        "approvedBy": { "type": "string" }
+      },
+      "required": ["displayName", "homeBase", "approvalStatus"]
+    },
+    "Release": {
+      "title": "Release",
+      "description": "Discography release (Album, EP, Single, Mixtape, Compilation)",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 150 },
+        "type": { "type": "string", "enum": ["album", "ep", "single", "mixtape", "compilation"] },
+        "releaseDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["announced", "released", "archived"] },
+        "coverUrl": { "type": "string", "maxLength": 500 },
+        "coverMediaId": { "type": "string", "maxLength": 100 },
+        "explicit": { "type": "boolean" },
+        "cleanVersionUrl": { "type": "string", "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "credits": { "type": "array" },
+        "platformLinks": { "type": "object" },
+        "embedProvider": { "type": "string", "enum": ["spotify", "apple_music", "deezer", "youtube", "none"] },
+        "embedUrl": { "type": "string", "maxLength": 500 },
+        "featured": { "type": "boolean" },
+        "sortOrder": { "type": "number" },
+        "approvalStatus": { "type": "string", "enum": ["draft", "pending", "approved"] }
+      },
+      "required": ["slug", "title", "type", "releaseDate", "status", "explicit", "approvalStatus"]
+    },
+    "Track": {
+      "title": "Track",
+      "description": "Individual track belonging to a release",
+      "type": "object",
+      "properties": {
+        "releaseId": { "type": "string", "maxLength": 100 },
+        "trackNumber": { "type": "number" },
+        "title": { "type": "string", "maxLength": 150 },
+        "durationSeconds": { "type": "number" },
+        "explicit": { "type": "boolean" },
+        "lyricsStatus": { "type": "string", "enum": ["not_shown", "licensed", "instrumental"] },
+        "licensedLyricsUrl": { "type": "string", "maxLength": 500 },
+        "platformLinks": { "type": "object" }
+      },
+      "required": ["releaseId", "trackNumber", "title", "explicit", "lyricsStatus"]
+    },
+    "City": {
+      "title": "City",
+      "description": "Tour target city hub with metrics and priority tier",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "state": { "type": "string", "maxLength": 50 },
+        "country": { "type": "string", "maxLength": 50 },
+        "timeZone": { "type": "string", "maxLength": 50 },
+        "heroImageUrl": { "type": "string", "maxLength": 500 },
+        "heroMediaId": { "type": "string", "maxLength": 100 },
+        "cityNote": { "type": "string", "maxLength": 1000 },
+        "priorityTier": { "type": "number", "enum": [1, 2, 3] },
+        "enabled": { "type": "boolean" },
+        "metricsPrivate": { "type": "object" },
+        "adminNote": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["slug", "name", "state", "priorityTier", "enabled"]
+    },
+    "Venue": {
+      "title": "Venue",
+      "description": "Concert venue location information",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "address": { "type": "string", "maxLength": 300 },
+        "cityId": { "type": "string", "maxLength": 100 },
+        "capacityRange": { "type": "string", "maxLength": 50 },
+        "website": { "type": "string", "maxLength": 300 },
+        "contactName": { "type": "string", "maxLength": 100 },
+        "contactEmail": { "type": "string", "maxLength": 150 },
+        "timeZone": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "address", "cityId"]
+    },
+    "Show": {
+      "title": "Show",
+      "description": "Live tour date entry with official ticketing link and pricing",
+      "type": "object",
+      "properties": {
+        "tourId": { "type": "string", "maxLength": 100 },
+        "cityId": { "type": "string", "maxLength": 100 },
+        "venueId": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 30 },
+        "doorsTime": { "type": "string", "maxLength": 30 },
+        "showTime": { "type": "string", "maxLength": 30 },
+        "timeZone": { "type": "string", "maxLength": 50 },
+        "agePolicy": { "type": "string", "enum": ["all_ages", "18_plus", "21_plus"] },
+        "opener": { "type": "string", "maxLength": 150 },
+        "status": { "type": "string", "enum": ["on_sale", "low_tickets", "sold_out", "cancelled", "postponed", "past"] },
+        "officialTicketUrl": { "type": "string", "maxLength": 500 },
+        "ticketVendorName": { "type": "string", "maxLength": 100 },
+        "priceLabel": { "type": "string", "maxLength": 100 },
+        "priceSource": { "type": "string", "maxLength": 100 },
+        "priceVerifiedOn": { "type": "string", "maxLength": 30 },
+        "experiences": { "type": "array" },
+        "publicNotice": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["cityId", "venueId", "date", "agePolicy", "status"]
+    },
+    "PartnerOffer": {
+      "title": "PartnerOffer",
+      "description": "Sponsored promotional offer with mandatory fine print and verified checklist",
+      "type": "object",
+      "properties": {
+        "partnerName": { "type": "string", "maxLength": 100 },
+        "partnerLogoUrl": { "type": "string", "maxLength": 500 },
+        "offerType": { "type": "string", "enum": ["fan_membership", "razer_gold", "apple", "merch", "other"] },
+        "headline": { "type": "string", "maxLength": 200 },
+        "discountText": { "type": "string", "maxLength": 200 },
+        "scope": { "type": "string", "enum": ["all_visitors", "members_only", "city", "segment"] },
+        "cityId": { "type": "string", "maxLength": 100 },
+        "segmentKey": { "type": "string", "maxLength": 100 },
+        "startAt": { "type": "string" },
+        "endAt": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "approved", "paused", "expired"] },
+        "ctaLabel": { "type": "string", "maxLength": 100 },
+        "ctaUrl": { "type": "string", "maxLength": 500 },
+        "finePrint": { "type": "string", "maxLength": 3000 },
+        "signedTermsRef": { "type": "string", "maxLength": 200 },
+        "ticketRelated": { "type": "boolean" },
+        "ticketingPartnerApproved": { "type": "boolean" },
+        "ticketingVendorName": { "type": "string", "maxLength": 100 },
+        "sponsoredLabel": { "type": "string", "enum": ["Sponsored"] }
+      },
+      "required": ["partnerName", "offerType", "headline", "discountText", "scope", "finePrint", "sponsoredLabel", "status"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "Registered Fan Club user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 150 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "cityId": { "type": "string", "maxLength": 100 },
+        "segments": { "type": "array" },
+        "confirmed18Plus": { "type": "boolean" },
+        "confirmed18PlusAt": { "type": "string" },
+        "language": { "type": "string", "maxLength": 10 },
+        "notificationPrefs": { "type": "object" },
+        "status": { "type": "string", "enum": ["active", "suspended", "removed"] }
+      },
+      "required": ["uid", "displayName", "status"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Direct communication thread between member and fan support",
+      "type": "object",
+      "properties": {
+        "memberUid": { "type": "string", "maxLength": 128 },
+        "memberName": { "type": "string", "maxLength": 100 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["open", "waiting", "closed"] },
+        "assigneeUid": { "type": "string", "maxLength": 128 },
+        "cityId": { "type": "string", "maxLength": 100 },
+        "lastMessage": { "type": "string", "maxLength": 1000 },
+        "lastMessageAt": { "type": "string" }
+      },
+      "required": ["memberUid", "subject", "status"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Inbound inquiry from Fans, Press, or Booking forms",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "enum": ["fans", "press", "booking"] },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "city": { "type": "string", "maxLength": 100 },
+        "message": { "type": "string", "maxLength": 3000 },
+        "outlet": { "type": "string", "maxLength": 150 },
+        "deadline": { "type": "string", "maxLength": 50 },
+        "proposedDate": { "type": "string", "maxLength": 50 },
+        "capacity": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["new", "contacted", "hold", "offer_sent", "booked", "declined", "closed"] }
+      },
+      "required": ["category", "name", "email", "message", "status"]
+    },
+    "NewsPost": {
+      "title": "NewsPost",
+      "description": "Curated news article or announcement",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 200 },
+        "body": { "type": "string", "maxLength": 10000 },
+        "tags": { "type": "array" },
+        "publishAt": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "review", "approved", "published", "archived"] },
+        "authorTeam": { "type": "string", "maxLength": 100 },
+        "heroImageUrl": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["slug", "title", "body", "status", "authorTeam"]
+    },
+    "CopyItem": {
+      "title": "CopyItem",
+      "description": "Approved text fragment with source audit trail",
+      "type": "object",
+      "properties": {
+        "pageRef": { "type": "string", "maxLength": 100 },
+        "key": { "type": "string", "maxLength": 100 },
+        "body": { "type": "string", "maxLength": 10000 },
+        "status": { "type": "string", "enum": ["pending", "approved", "changes_requested"] },
+        "author": { "type": "string", "maxLength": 100 },
+        "sourceNote": { "type": "string", "maxLength": 500 },
+        "approvedAt": { "type": "string" }
+      },
+      "required": ["pageRef", "key", "body", "status"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable administrative audit record",
+      "type": "object",
+      "properties": {
+        "actorUid": { "type": "string", "maxLength": 128 },
+        "actorEmail": { "type": "string", "maxLength": 150 },
+        "actorRole": { "type": "string", "maxLength": 50 },
+        "action": { "type": "string", "maxLength": 100 },
+        "targetCollection": { "type": "string", "maxLength": 100 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "object" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["actorEmail", "action", "targetCollection", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/artist_profile/{profileId}": {
+      "schema": { "$ref": "#/entities/ArtistProfile" },
+      "description": "Artist biography and profile documents"
+    },
+    "/releases/{releaseId}": {
+      "schema": { "$ref": "#/entities/Release" },
+      "description": "Discography releases"
+    },
+    "/tracks/{trackId}": {
+      "schema": { "$ref": "#/entities/Track" },
+      "description": "Track entries across releases"
+    },
+    "/cities/{cityId}": {
+      "schema": { "$ref": "#/entities/City" },
+      "description": "Tour cities and local audience hubs"
+    },
+    "/venues/{venueId}": {
+      "schema": { "$ref": "#/entities/Venue" },
+      "description": "Concert venue directory"
+    },
+    "/shows/{showId}": {
+      "schema": { "$ref": "#/entities/Show" },
+      "description": "Tour date schedule"
+    },
+    "/offers/{offerId}": {
+      "schema": { "$ref": "#/entities/PartnerOffer" },
+      "description": "Sponsored brand and ticket partner offers"
+    },
+    "/members/{memberId}": {
+      "schema": { "$ref": "#/entities/Member" },
+      "description": "Fan Club member user profiles"
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Fan support message conversations"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/Inquiry" },
+      "description": "Contact form submissions"
+    },
+    "/news_posts/{postId}": {
+      "schema": { "$ref": "#/entities/NewsPost" },
+      "description": "News articles and tour announcements"
+    },
+    "/copy_items/{copyId}": {
+      "schema": { "$ref": "#/entities/CopyItem" },
+      "description": "Controlled copy and verified claim items"
+    },
+    "/audit_log/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Audit trail entries"
+    }
+  }
+}

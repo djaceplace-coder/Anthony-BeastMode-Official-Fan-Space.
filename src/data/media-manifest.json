@@ -1,0 +1,123 @@
+[
+  {
+    "slot_id": "home-hero-banner",
+    "page": "/",
+    "purpose": "Home hero background atmosphere / stage landscape",
+    "required_ratios": ["16:9"],
+    "alt_text": "Anthony BeastMode live on stage (pending approved photo)",
+    "credit": "Official Artist Archive (Pending team upload)",
+    "rights_status": "pending",
+    "asset_path": null,
+    "placeholder_label": "Official Artist Stage Photo (16:9 Landscape) — Pending Team Approval"
+  },
+  {
+    "slot_id": "release-trailer-park-baby-cover",
+    "page": "/music/trailer-park-baby",
+    "purpose": "Release album artwork for Trailer Park Baby",
+    "required_ratios": ["1:1"],
+    "alt_text": "Trailer Park Baby official album artwork",
+    "credit": "Anthony BeastMode Music (Verified Release Artwork)",
+    "rights_status": "owned",
+    "asset_path": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80",
+    "placeholder_label": "Official Square Album Cover (1:1)"
+  },
+  {
+    "slot_id": "release-outlaw-country-roads-cover",
+    "page": "/music/outlaw-country-roads",
+    "purpose": "Release single cover artwork for Outlaw Country Roads",
+    "required_ratios": ["1:1"],
+    "alt_text": "Outlaw Country Roads single artwork",
+    "credit": "Anthony BeastMode Music",
+    "rights_status": "owned",
+    "asset_path": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=80",
+    "placeholder_label": "Single Cover (1:1)"
+  },
+  {
+    "slot_id": "artist-bio-portrait",
+    "page": "/about",
+    "purpose": "Official artist portrait for biography and press kit",
+    "required_ratios": ["4:5"],
+    "alt_text": "Anthony BeastMode official press portrait",
+    "credit": "Pending Team Submission",
+    "rights_status": "pending",
+    "asset_path": null,
+    "placeholder_label": "Official Artist Portrait (4:5) — Pending Approval"
+  },
+  {
+    "slot_id": "city-hero-blue-springs-mo",
+    "page": "/tour/blue-springs-mo",
+    "purpose": "Blue Springs MO city hub landscape banner",
+    "required_ratios": ["16:9"],
+    "alt_text": "Blue Springs Missouri community banner",
+    "credit": "City Hub Media Archive",
+    "rights_status": "licensed",
+    "asset_path": "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80",
+    "placeholder_label": "Blue Springs MO Hub Banner"
+  },
+  {
+    "slot_id": "city-hero-kansas-city-mo",
+    "page": "/tour/kansas-city-mo",
+    "purpose": "Kansas City MO city hub landscape banner",
+    "required_ratios": ["16:9"],
+    "alt_text": "Kansas City Missouri skyline and hub",
+    "credit": "City Hub Media Archive",
+    "rights_status": "licensed",
+    "asset_path": "https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=1200&q=80",
+    "placeholder_label": "Kansas City MO Hub Banner"
+  },
+  {
+    "slot_id": "city-hero-st-louis-mo",
+    "page": "/tour/st-louis-mo",
+    "purpose": "St. Louis MO city hub landscape banner",
+    "required_ratios": ["16:9"],
+    "alt_text": "St. Louis Missouri landmark arch and city landscape",
+    "credit": "City Hub Media Archive",
+    "rights_status": "licensed",
+    "asset_path": "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=80",
+    "placeholder_label": "St. Louis MO Hub Banner"
+  },
+  {
+    "slot_id": "city-hero-dayton-oh",
+    "page": "/tour/dayton-oh",
+    "purpose": "Dayton OH city hub landscape banner",
+    "required_ratios": ["16:9"],
+    "alt_text": "Dayton Ohio live music tour stop",
+    "credit": "City Hub Media Archive",
+    "rights_status": "licensed",
+    "asset_path": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80",
+    "placeholder_label": "Dayton OH Hub Banner"
+  },
+  {
+    "slot_id": "city-hero-battle-creek-mi",
+    "page": "/tour/battle-creek-mi",
+    "purpose": "Battle Creek MI city hub landscape banner",
+    "required_ratios": ["16:9"],
+    "alt_text": "Battle Creek Michigan tour stop banner",
+    "credit": "City Hub Media Archive",
+    "rights_status": "licensed",
+    "asset_path": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80",
+    "placeholder_label": "Battle Creek MI Hub Banner"
+  },
+  {
+    "slot_id": "city-hero-evansville-in",
+    "page": "/tour/evansville-in",
+    "purpose": "Evansville IN city hub landscape banner",
+    "required_ratios": ["16:9"],
+    "alt_text": "Evansville Indiana tour stop banner",
+    "credit": "City Hub Media Archive",
+    "rights_status": "licensed",
+    "asset_path": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
+    "placeholder_label": "Evansville IN Hub Banner"
+  },
+  {
+    "slot_id": "city-hero-memphis-tn",
+    "page": "/tour/memphis-tn",
+    "purpose": "Memphis TN city hub landscape banner",
+    "required_ratios": ["16:9"],
+    "alt_text": "Memphis Tennessee music district hub banner",
+    "credit": "City Hub Media Archive",
+    "rights_status": "licensed",
+    "asset_path": "https://images.unsplash.com/photo-1442504028989-ab58b5f29a4a?auto=format&fit=crop&w=1200&q=80",
+    "placeholder_label": "Memphis TN Hub Banner"
+  }
+]

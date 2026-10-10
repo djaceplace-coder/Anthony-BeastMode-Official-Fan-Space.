@@ -1,0 +1,164 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'adereraadenike@gmail.com' ||
+        (request.auth.token.keys().hasAll(['role']) && request.auth.token.role in ['super_admin', 'content_admin', 'tour_admin', 'fan_support', 'partnerships']) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Public / Managed Content
+    match /artist_profile/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /releases/{id} {
+      allow read: if resource.data.approvalStatus == 'approved' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /tracks/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /platforms/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /cities/{id} {
+      allow read: if resource.data.enabled == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /venues/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /shows/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /tours/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /events/{id} {
+      allow read: if (!('membersOnly' in resource.data) || resource.data.membersOnly == false || isSignedIn()) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /news_posts/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /copy_items/{id} {
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /media/{id} {
+      allow read: if resource.data.approvalStatus == 'approved' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /media_slots/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /offers/{id} {
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /offer_metrics/{id} {
+      allow read: if isAdmin();
+      allow create, update: if true;
+    }
+
+    match /fan_downloads/{id} {
+      allow read: if isAdmin();
+      allow create, update: if true;
+    }
+
+    // Member & User Space
+    match /members/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    match /member_follows/{id} {
+      allow read: if isSignedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isSignedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+
+    match /conversations/{convId} {
+      allow read: if (isSignedIn() && resource.data.memberUid == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && request.resource.data.memberUid == request.auth.uid;
+      allow update: if (isSignedIn() && resource.data.memberUid == request.auth.uid) || isAdmin();
+
+      match /messages/{msgId} {
+        allow read: if (isSignedIn() && get(/databases/$(database)/documents/conversations/$(convId)).data.memberUid == request.auth.uid) || isAdmin();
+        allow create: if isSignedIn();
+        allow update, delete: if isAdmin();
+      }
+
+      match /internal_notes/{noteId} {
+        allow read, write: if isAdmin();
+      }
+    }
+
+    match /notifications/{id} {
+      allow read: if isSignedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow update: if isSignedIn() && resource.data.uid == request.auth.uid;
+      allow create, delete: if isAdmin();
+    }
+
+    match /inquiries/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /audit_log/{id} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn() || isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /admins/{id} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

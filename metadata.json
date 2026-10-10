@@ -1,0 +1,6 @@
+{
+  "name": "Anthony BeastMode Fan Club & Tour",
+  "description": "Official Fan Club, Tour Dates, Discography, and City Hubs for Anthony BeastMode.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
