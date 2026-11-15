@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Calendar,
-  CheckCircle,
   Clock,
   Disc3,
+  ExternalLink,
   FileCheck,
-  FileText,
   Inbox,
   LogOut,
   MapPin,
+  Settings,
   Shield,
+  ShoppingBag,
   Tag,
   Users,
 } from 'lucide-react';
@@ -19,28 +20,33 @@ import { useDatabase } from '../../context/DatabaseContext';
 interface AdminLayoutProps {
   currentSubroute: string;
   navigateAdmin: (subroute: string) => void;
+  onExitToSite?: () => void;
   children: React.ReactNode;
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({
   currentSubroute,
   navigateAdmin,
+  onExitToSite,
   children,
 }) => {
-  const { currentUser, isAdmin, signOut } = useAuth();
-  const { copyItems, inquiries, shows, releases, offers } = useDatabase();
+  const { currentUser, signOut } = useAuth();
+  const { copyItems, inquiries, shows, releases, offers, members, merchItems } = useDatabase();
 
   const pendingCopy = copyItems.filter((c) => c.status === 'pending').length;
   const newInquiries = inquiries.filter((i) => i.status === 'new').length;
 
   const adminNav = [
-    { label: 'Dashboard', subroute: 'overview', icon: Shield },
-    { label: 'Releases & Music', subroute: 'releases', icon: Disc3, badge: releases.length },
-    { label: 'Tours & Shows', subroute: 'tours', icon: Calendar, badge: shows.length },
+    { label: 'Command Overview', subroute: 'overview', icon: Shield },
+    { label: 'Members & Accounts', subroute: 'members', icon: Users, badge: members.length },
+    { label: 'Tours, Shows & Venues', subroute: 'tours', icon: Calendar, badge: shows.length },
+    { label: 'Releases & Tracks', subroute: 'releases', icon: Disc3, badge: releases.length },
+    { label: 'Merch, News & Bio', subroute: 'merch-news', icon: ShoppingBag, badge: merchItems.length },
     { label: 'Cities & Priority', subroute: 'cities', icon: MapPin },
     { label: 'Copy Approval Queue', subroute: 'copy', icon: FileCheck, badge: pendingCopy || undefined },
     { label: 'Partner Offers', subroute: 'offers', icon: Tag, badge: offers.length },
-    { label: 'Inbox & Booking', subroute: 'inbox', icon: Inbox, badge: newInquiries || undefined },
+    { label: 'Inbox & Live Chat', subroute: 'inbox', icon: Inbox, badge: newInquiries || undefined },
+    { label: 'Site Settings', subroute: 'settings', icon: Settings },
     { label: 'Audit Trail', subroute: 'audit', icon: Clock },
   ];
 
@@ -50,13 +56,22 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       <header className="border-b border-[#2A2E3D] bg-[#14161D] px-6 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono text-xs font-bold border border-amber-500/30">
-            INTERNAL OPS CONSOLE
+            REAL-TIME OPS CONSOLE
           </div>
           <span className="text-sm font-bold text-white">Anthony BeastMode Management</span>
         </div>
 
-        <div className="flex items-center space-x-4 text-xs">
-          <span className="text-gray-400 font-mono">{currentUser?.email}</span>
+        <div className="flex items-center space-x-3 text-xs">
+          {onExitToSite && (
+            <button
+              onClick={onExitToSite}
+              className="px-3 py-1.5 rounded bg-[#1F222E] hover:border-amber-500 text-gray-200 border border-[#2A2E3D] transition-colors flex items-center space-x-1.5"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+              <span>View Public Site</span>
+            </button>
+          )}
+          <span className="text-gray-400 font-mono hidden sm:inline">{currentUser?.email}</span>
           <button
             onClick={signOut}
             className="px-3 py-1.5 rounded bg-[#1F222E] hover:bg-red-950/40 text-gray-300 hover:text-red-400 border border-[#2A2E3D] transition-colors flex items-center space-x-1"
@@ -70,9 +85,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Main Admin Body */}
       <div className="flex-1 flex flex-col md:flex-row">
         {/* Left Sidebar */}
-        <aside className="w-full md:w-64 border-r border-[#2A2E3D] bg-[#14161D]/60 p-4 space-y-1">
+        <aside className="w-full md:w-64 border-r border-[#2A2E3D] bg-[#14161D]/60 p-4 space-y-1 shrink-0">
           <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">
-            Navigation
+            Management Modules
           </div>
           {adminNav.map((item) => {
             const Icon = item.icon;
@@ -106,9 +121,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </aside>
 
         {/* Content View */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          {children}
-        </main>
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto">{children}</main>
       </div>
     </div>
   );

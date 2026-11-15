@@ -32,19 +32,22 @@ import { AccountPage } from './pages/AccountPage';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { AdminMembersPage } from './pages/admin/AdminMembersPage';
 import { AdminReleasesPage } from './pages/admin/AdminReleasesPage';
 import { AdminShowsPage } from './pages/admin/AdminShowsPage';
+import { AdminMerchNewsPage } from './pages/admin/AdminMerchNewsPage';
 import { AdminCitiesPage } from './pages/admin/AdminCitiesPage';
 import { AdminCopyApprovalPage } from './pages/admin/AdminCopyApprovalPage';
 import { AdminOffersPage } from './pages/admin/AdminOffersPage';
 import { AdminInboxPage } from './pages/admin/AdminInboxPage';
+import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 import { AdminAuditPage } from './pages/admin/AdminAuditPage';
 
 import { Release, Show, NewsPost } from './types/database';
 
 function AppContent() {
-  const { isAdmin, currentUser } = useAuth();
-  const { releases, shows, cities, newsPosts } = useDatabase();
+  const { isAdmin } = useAuth();
+  const { releases, shows, cities, newsPosts, siteSettings } = useDatabase();
 
   const [currentRoute, setCurrentRoute] = useState<string>(window.location.pathname || '/');
   const [selectedRelease, setSelectedRelease] = useState<Release | null>(null);
@@ -119,16 +122,35 @@ function AppContent() {
       <AdminLayout
         currentSubroute={adminSubroute}
         navigateAdmin={(sub) => setAdminSubroute(sub)}
+        onExitToSite={() => navigate('/')}
       >
         {adminSubroute === 'overview' && <AdminDashboard navigateAdmin={setAdminSubroute} />}
+        {adminSubroute === 'members' && <AdminMembersPage />}
         {adminSubroute === 'releases' && <AdminReleasesPage />}
         {adminSubroute === 'tours' && <AdminShowsPage />}
+        {adminSubroute === 'merch-news' && <AdminMerchNewsPage />}
         {adminSubroute === 'cities' && <AdminCitiesPage />}
         {adminSubroute === 'copy' && <AdminCopyApprovalPage />}
         {adminSubroute === 'offers' && <AdminOffersPage />}
         {adminSubroute === 'inbox' && <AdminInboxPage />}
+        {adminSubroute === 'settings' && <AdminSettingsPage />}
         {adminSubroute === 'audit' && <AdminAuditPage />}
       </AdminLayout>
+    );
+  }
+
+  // Maintenance mode check for non-admin public visitors
+  if (siteSettings.maintenanceMode && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col items-center justify-center p-6 text-center space-y-4">
+        <span className="text-xs font-mono uppercase tracking-widest text-[var(--accent)]">
+          Scheduled System Update
+        </span>
+        <h1 className="text-3xl font-black">Anthony BeastMode Official</h1>
+        <p className="text-xs text-[var(--text-secondary)] max-w-md">
+          We are currently updating tour routing and catalog listings. Please check back shortly.
+        </p>
+      </div>
     );
   }
 

@@ -210,6 +210,7 @@ export interface Member {
   uid: string;
   email?: string;
   displayName: string;
+  role?: UserRole;
   cityId?: string;
   segments: string[]; // e.g. 'rebel_family', 'city_fan', 'new_listener', 'press', 'venue_contact'
   confirmed18Plus: boolean;
@@ -227,6 +228,9 @@ export interface Member {
     captionsDefault?: boolean;
   };
   status: 'active' | 'suspended' | 'removed';
+  adminNotes?: string;
+  createdByAdmin?: boolean;
+  lastLoginAt?: string;
   createdAt?: string;
 }
 
@@ -237,12 +241,50 @@ export interface MemberFollow {
   followedAt: string;
 }
 
+export type DocumentTemplateType =
+  | 'merch_invoice'
+  | 'ticket_invoice'
+  | 'booking_invoice'
+  | 'order_receipt';
+
+export interface ChatDocumentLineItem {
+  description: string;
+  quantity: number;
+  unitPrice: string;
+  total: string;
+}
+
+export interface ChatDocumentAttachment {
+  docType: DocumentTemplateType;
+  title: string;
+  referenceNumber: string;
+  issueDate: string;
+  recipientName: string;
+  recipientEmail: string;
+  statusLabel: 'PAID & VERIFIED' | 'ISSUED / DUE' | 'BOOKING CONFIRMED' | 'ORDER VALIDATED';
+  items: ChatDocumentLineItem[];
+  subtotal: string;
+  feesOrTax: string;
+  totalAmount: string;
+  verificationCode: string;
+  notes?: string;
+}
+
+export interface ChatMediaAttachment {
+  url: string;
+  name: string;
+  mimeType: string;
+}
+
 export interface Conversation {
   id: string;
   memberUid: string;
   memberName: string;
+  memberEmail?: string;
   subject: string;
   status: 'open' | 'waiting' | 'closed';
+  requestedByMember?: boolean;
+   initiatedByAdmin?: boolean;
   assigneeUid?: string;
   cityId?: string;
   segmentSnapshot?: string[];
@@ -260,6 +302,8 @@ export interface Message {
   createdAt: string;
   hidden?: boolean;
   hiddenReason?: string;
+  documentAttachment?: ChatDocumentAttachment;
+  mediaAttachment?: ChatMediaAttachment;
 }
 
 export interface InternalNote {
@@ -369,3 +413,31 @@ export interface FanDownload {
   date: string;
   count: number;
 }
+
+export interface MerchItem {
+  id: string;
+  title: string;
+  priceLabel: string;
+  status: 'available' | 'low_stock' | 'sold_out';
+  imageUrl: string;
+  description: string;
+  officialStoreUrl: string;
+  sortOrder?: number;
+  updatedAt?: string;
+}
+
+export interface SiteSettings {
+  id?: string;
+  maintenanceMode: boolean;
+  defaultLanguage: string;
+  communityNameApproved: boolean;
+  footerText: string;
+  socialLinks: {
+    spotify?: string;
+    appleMusic?: string;
+    youtube?: string;
+    instagram?: string;
+  };
+  updatedAt?: string;
+}
+

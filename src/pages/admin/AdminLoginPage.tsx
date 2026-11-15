@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyRound, Lock, ShieldAlert } from 'lucide-react';
+import { KeyRound, Lock } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 interface AdminLoginPageProps {
@@ -7,7 +7,7 @@ interface AdminLoginPageProps {
 }
 
 export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onSuccess }) => {
-  const { signIn, currentUser, isAdmin } = useAuth();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -20,13 +20,11 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onSuccess }) => 
 
     try {
       await signIn(email, password);
-      // Wait for role check
       setTimeout(() => {
         onSuccess();
-      }, 500);
+      }, 200);
     } catch {
-      // Generic error message per Rule 1.8
-      setErrorMsg('Invalid administrative credentials or insufficient privileges.');
+      setErrorMsg('Invalid administrative credentials or security passcode.');
     } finally {
       setIsSubmitting(false);
     }
@@ -41,7 +39,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onSuccess }) => 
           </div>
           <h1 className="text-lg font-bold text-white">System Access Verification</h1>
           <p className="text-xs text-gray-400">
-            Authorized management credentials required.
+            Authorized management credentials and security passcode required.
           </p>
         </div>
 
@@ -53,26 +51,28 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onSuccess }) => 
 
         <form onSubmit={handleAdminLogin} className="space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="text-gray-400">Authorized Email</label>
+            <label className="text-gray-400">Authorized Admin Email</label>
             <input
               type="email"
               required
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@management.com"
-              className="w-full px-3 py-2 rounded-md bg-[#1F222E] border border-[#2A2E3D] text-white focus:outline-none focus:border-amber-500"
+              placeholder="Enter authorized admin email"
+              className="w-full px-3 py-2.5 rounded-md bg-[#1F222E] border border-[#2A2E3D] text-white focus:outline-none focus:border-amber-500"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-gray-400">Security Key / Password</label>
+            <label className="text-gray-400">Security Passcode / Password</label>
             <input
               type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••••"
-              className="w-full px-3 py-2 rounded-md bg-[#1F222E] border border-[#2A2E3D] text-white focus:outline-none focus:border-amber-500"
+              placeholder="••••••"
+              className="w-full px-3 py-2.5 rounded-md bg-[#1F222E] border border-[#2A2E3D] text-white focus:outline-none focus:border-amber-500 tracking-widest"
             />
           </div>
 

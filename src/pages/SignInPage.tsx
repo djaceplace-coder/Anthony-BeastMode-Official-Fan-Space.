@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogIn, KeyRound } from 'lucide-react';
+import { LogIn, ShieldCheck } from 'lucide-react';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { useAuth } from '../context/AuthContext';
@@ -10,7 +10,7 @@ interface SignInPageProps {
 }
 
 export const SignInPage: React.FC<SignInPageProps> = ({ navigate }) => {
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -26,6 +26,19 @@ export const SignInPage: React.FC<SignInPageProps> = ({ navigate }) => {
       navigate('/account');
     } catch (err: any) {
       setErrorMsg(err.message || 'Invalid email or password.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setErrorMsg('');
+    setIsSubmitting(true);
+    try {
+      await signInWithGoogle();
+      navigate('/account');
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Google sign-in failed.');
     } finally {
       setIsSubmitting(false);
     }
@@ -73,6 +86,24 @@ export const SignInPage: React.FC<SignInPageProps> = ({ navigate }) => {
             Password reset link sent to your email.
           </div>
         )}
+
+        <button
+          type="button"
+          disabled={isSubmitting}
+          onClick={handleGoogleLogin}
+          className="w-full py-2.5 px-4 text-xs font-bold rounded-md border border-[var(--border-subtle)] bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:border-[var(--accent)] transition-all flex items-center justify-center space-x-2"
+        >
+          <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
+          <span>Continue with Google</span>
+        </button>
+
+        <div className="relative flex py-1 items-center">
+          <div className="flex-grow border-t border-[var(--border-subtle)]"></div>
+          <span className="flex-shrink mx-3 text-[10px] font-mono uppercase text-[var(--text-muted)]">
+            Or Sign In with Email
+          </span>
+          <div className="flex-grow border-t border-[var(--border-subtle)]"></div>
+        </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1">

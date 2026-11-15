@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Clock, Filter, Search, Shield } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { AuditLogEntry } from '../../types/database';
+import { useDatabase } from '../../context/DatabaseContext';
 
 export const AdminAuditPage: React.FC = () => {
+  const { auditLogs } = useDatabase();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Audit logs populated during operations
-  const mockAuditLogs: AuditLogEntry[] = [
+  const fallbackAuditLogs: AuditLogEntry[] = [
     {
       id: 'audit-001',
       actorUid: 'admin-sec',
@@ -29,31 +30,11 @@ export const AdminAuditPage: React.FC = () => {
       details: { city: 'Blue Springs, MO', priceVerifiedOn: '2026-10-05' },
       timestamp: '2026-10-10T04:00:15Z',
     },
-    {
-      id: 'audit-003',
-      actorUid: 'admin-sec',
-      actorEmail: 'adereraadenike@gmail.com',
-      actorRole: 'partnerships',
-      action: 'approve_offer',
-      targetCollection: 'offers',
-      targetId: 'offer-razer-gold',
-      details: { partner: 'Razer Gold', finePrintLength: 320 },
-      timestamp: '2026-10-10T03:55:00Z',
-    },
-    {
-      id: 'audit-004',
-      actorUid: 'admin-sec',
-      actorEmail: 'adereraadenike@gmail.com',
-      actorRole: 'content_admin',
-      action: 'approve_copy',
-      targetCollection: 'copy_items',
-      targetId: 'copy-about-origin',
-      details: { sourceNote: 'Approved official press biography 2026' },
-      timestamp: '2026-10-10T03:45:00Z',
-    },
   ];
 
-  const filteredLogs = mockAuditLogs.filter((log) => {
+  const allLogs = auditLogs.length > 0 ? auditLogs : fallbackAuditLogs;
+
+  const filteredLogs = allLogs.filter((log) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return (
@@ -68,7 +49,7 @@ export const AdminAuditPage: React.FC = () => {
       <div className="border-b border-[#2A2E3D] pb-4">
         <h1 className="text-xl font-bold text-white">Security &amp; Operations Audit Trail</h1>
         <p className="text-xs text-gray-400 mt-0.5">
-          Immutable log of all administrative creations, copy approvals, and permission events.
+          Real-time immutable log of all administrative creations, user updates, copy approvals, and permission events.
         </p>
       </div>
 
@@ -97,7 +78,7 @@ export const AdminAuditPage: React.FC = () => {
           <tbody className="divide-y divide-[#2A2E3D] font-mono">
             {filteredLogs.map((log) => (
               <tr key={log.id} className="hover:bg-[#1F222E]/50 transition-colors">
-                <td className="p-3 text-gray-400">{log.timestamp}</td>
+                <td className="p-3 text-gray-400">{new Date(log.timestamp).toLocaleString()}</td>
                 <td className="p-3 text-white">
                   {log.actorEmail}
                   <span className="block text-[10px] text-amber-400">({log.actorRole})</span>
@@ -105,7 +86,7 @@ export const AdminAuditPage: React.FC = () => {
                 <td className="p-3 text-emerald-400 font-bold">{log.action}</td>
                 <td className="p-3 text-gray-300">{log.targetCollection}</td>
                 <td className="p-3 text-[11px] text-gray-400 max-w-xs truncate">
-                  {JSON.stringify(log.details)}
+                  {JSON.stringify(log.details || log.after || {})}
                 </td>
               </tr>
             ))}

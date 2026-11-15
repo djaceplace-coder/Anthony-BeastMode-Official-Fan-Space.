@@ -243,6 +243,34 @@
         "timestamp": { "type": "string" }
       },
       "required": ["actorEmail", "action", "targetCollection", "timestamp"]
+    },
+    "MerchItem": {
+      "title": "MerchItem",
+      "description": "Official merchandise highlight linking to authorized store",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "priceLabel": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["available", "low_stock", "sold_out"] },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "officialStoreUrl": { "type": "string", "maxLength": 500 },
+        "sortOrder": { "type": "number" }
+      },
+      "required": ["title", "priceLabel", "status", "officialStoreUrl"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global platform configuration and governance toggles",
+      "type": "object",
+      "properties": {
+        "maintenanceMode": { "type": "boolean" },
+        "defaultLanguage": { "type": "string", "maxLength": 10 },
+        "communityNameApproved": { "type": "boolean" },
+        "footerText": { "type": "string", "maxLength": 500 },
+        "socialLinks": { "type": "object" }
+      },
+      "required": ["maintenanceMode", "defaultLanguage"]
     }
   },
   "firestore": {
@@ -293,6 +321,14 @@
     "/copy_items/{copyId}": {
       "schema": { "$ref": "#/entities/CopyItem" },
       "description": "Controlled copy and verified claim items"
+    },
+    "/merch_items/{merchId}": {
+      "schema": { "$ref": "#/entities/MerchItem" },
+      "description": "Curated merchandise catalog items"
+    },
+    "/site_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Global site settings"
     },
     "/audit_log/{logId}": {
       "schema": { "$ref": "#/entities/AuditLog" },

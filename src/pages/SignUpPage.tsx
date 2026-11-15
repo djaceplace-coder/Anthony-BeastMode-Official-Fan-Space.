@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, ShieldAlert, UserPlus } from 'lucide-react';
+import { ShieldCheck, UserPlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDatabase } from '../context/DatabaseContext';
 import { SEOHead } from '../components/common/SEOHead';
@@ -9,7 +9,7 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage: React.FC<SignUpPageProps> = ({ navigate }) => {
-  const { signUp, confirm18Plus, is18PlusConfirmed } = useAuth();
+  const { signUp, signInWithGoogle, confirm18Plus, is18PlusConfirmed } = useAuth();
   const { cities } = useDatabase();
 
   const [name, setName] = useState('');
@@ -62,6 +62,20 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({ navigate }) => {
     }
   };
 
+  const handleGoogleSignUp = async () => {
+    setErrorMsg('');
+    setIsSubmitting(true);
+    try {
+      await confirm18Plus();
+      await signInWithGoogle();
+      navigate('/account');
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Google registration failed.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto py-8 space-y-8">
       <SEOHead
@@ -85,6 +99,24 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({ navigate }) => {
             {errorMsg}
           </div>
         )}
+
+        <button
+          type="button"
+          disabled={isSubmitting}
+          onClick={handleGoogleSignUp}
+          className="w-full py-2.5 px-4 text-xs font-bold rounded-md border border-[var(--border-subtle)] bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:border-[var(--accent)] transition-all flex items-center justify-center space-x-2"
+        >
+          <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
+          <span>Instant Join with Google</span>
+        </button>
+
+        <div className="relative flex py-1 items-center">
+          <div className="flex-grow border-t border-[var(--border-subtle)]"></div>
+          <span className="flex-shrink mx-3 text-[10px] font-mono uppercase text-[var(--text-muted)]">
+            Or Register with Email
+          </span>
+          <div className="flex-grow border-t border-[var(--border-subtle)]"></div>
+        </div>
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div className="space-y-1">

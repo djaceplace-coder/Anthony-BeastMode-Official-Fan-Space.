@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import {
   Bell,
+  CheckCircle2,
   Download,
-  KeyRound,
   LogOut,
-  MapPin,
   MessageSquare,
   Shield,
   Tag,
-  Trash2,
   User,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -22,10 +20,10 @@ interface AccountPageProps {
 }
 
 export const AccountPage: React.FC<AccountPageProps> = ({ navigate }) => {
-  const { currentUser, memberProfile, signOut, updateMemberProfile, selectedCityId, setSelectedCityId } = useAuth();
-  const { cities, offers } = useDatabase();
+  const { currentUser, memberProfile, isAdmin, signOut, updateMemberProfile, setSelectedCityId } = useAuth();
+  const { cities, offers, notifications, markNotificationRead } = useDatabase();
 
-  const [activeTab, setActiveTab] = useState<'profile' | 'chat' | 'offers' | 'security'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'alerts' | 'chat' | 'offers' | 'security'>('profile');
   const [displayName, setDisplayName] = useState(memberProfile?.displayName || '');
   const [saveStatus, setSaveStatus] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -45,6 +43,8 @@ export const AccountPage: React.FC<AccountPageProps> = ({ navigate }) => {
   }
 
   const memberCity = cities.find((c) => c.id === memberProfile?.cityId);
+  const myNotifications = notifications.filter((n) => n.uid === currentUser.uid);
+  const unreadAlertsCount = myNotifications.filter((n) => !n.readAt).length;
 
   // Offers relevant to member city or segment
   const relevantOffers = offers.filter((o) => {
@@ -57,7 +57,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({ navigate }) => {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     await updateMemberProfile({ displayName });
-    setSaveStatus('Profile updated successfully.');
+    setSaveStatus('Profile updated in real time.');
     setTimeout(() => setSaveStatus(''), 3000);
   };
 
@@ -113,17 +113,28 @@ export const AccountPage: React.FC<AccountPageProps> = ({ navigate }) => {
           </div>
         </div>
 
-        <button
-          onClick={signOut}
-          className="self-start sm:self-auto px-4 py-2 text-xs font-semibold rounded-md border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-red-400 hover:border-red-500/30 transition-all flex items-center space-x-1.5"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          <span>Sign Out</span>
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {isAdmin && (
+            <button
+              onClick={() => navigate('/admin')}
+              className="px-4 py-2 text-xs font-bold rounded-md bg-[var(--accent)] text-[#0B0C10] hover:bg-[var(--accent-hover)] transition-all flex items-center space-x-1.5"
+            >
+              <Shield className="w-3.5 h-3.5" />
+              <span>Open Admin Console</span>
+            </button>
+          )}
+          <button
+            onClick={signOut}
+            className="px-4 py-2 text-xs font-semibold rounded-md border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-red-400 hover:border-red-500/30 transition-all flex items-center space-x-1.5"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-[var(--border-subtle)] gap-6 text-xs font-bold uppercase tracking-wider">
+      <div className="flex flex-wrap border-b border-[var(--border-subtle)] gap-6 text-xs font-bold uppercase tracking-wider">
         <button
           onClick={() => setActiveTab('profile')}
           className={`pb-3 border-b-2 transition-colors flex items-center space-x-1.5 ${
@@ -134,6 +145,18 @@ export const AccountPage: React.FC<AccountPageProps> = ({ navigate }) => {
         >
           <User className="w-4 h-4" />
           <span>Profile &amp; Tour City</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('alerts')}
+          className={`pb-3 border-b-2 transition-colors flex items-center space-x-1.5 ${
+            activeTab === 'alerts'
+              ? 'border-[var(--accent)] text-[var(--accent)]'
+              : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          <Bell className="w-4 h-4" />
+          <span>Direct Alerts {unreadAlertsCount > 0 ? `(${unreadAlertsCount})` : ''}</span>
         </button>
 
         <button
@@ -246,6 +269,59 @@ export const AccountPage: React.FC<AccountPageProps> = ({ navigate }) => {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Direct Alerts Tab */}
+      {activeTab === 'alerts' && (
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">Direct Management Alerts</h2>
+            <p className="text-xs text-[var(--text-muted)]">
+              Real-time dispatches and presale updates sent directly to your account by management.
+            </p>
+          </div>
+          {myNotifications.length > 0 ? (
+            <div className="space-y-3">
+              {myNotifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className={`p-4 rounded-xl border flex items-start justify-between gap-4 ${
+                    notif.readAt
+                      ? 'bg-[var(--bg-secondary)] border-[var(--border-subtle)]'
+                      : 'bg-[var(--bg-elevated)] border-[var(--accent)]'
+                  }`}
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-[var(--text-primary)]">{notif.title}</span>
+                      {!notif.readAt && (
+                        <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-[var(--accent)] text-[#0B0C10]">
+                          New
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{notif.body}</p>
+                    <span className="block text-[10px] font-mono text-[var(--text-muted)]">
+                      {new Date(notif.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  {!notif.readAt && (
+                    <button
+                      onClick={() => markNotificationRead(notif.id)}
+                      className="px-3 py-1.5 text-[10px] font-mono uppercase rounded border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1 shrink-0"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Mark Read
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center text-xs text-[var(--text-muted)]">
+              No direct alerts dispatched to your account yet.
+            </div>
+          )}
         </div>
       )}
 
